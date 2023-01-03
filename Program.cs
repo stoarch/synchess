@@ -16,6 +16,12 @@ namespace BoomTris
 {
 	public class Game
 	{
+
+        const int GRID_X = 64;
+        const int GRID_Y = 64;
+        const int CELL_WIDTH = 64;
+        const int CELL_HEIGHT = 64;
+
 		public static void Main(string[] args)
 		{
 			InitWindow(1280, 720, "BoomTris");
@@ -33,17 +39,20 @@ namespace BoomTris
 					DrawFPS(10,10);
 					DrawText("SyncChess", 100, 10, 30, WHITE);
 
+                    var bluePos = new Vector2(0, 0);
+                    var redPos = new Vector2(512, 512);
+
                     // Draw blue sprite at grid cell 1,1
-                    DrawTextureRec(blueUnitTexture, new Rectangle(0, 0, 64, 64), new Vector2(64, 64), WHITE);
+                    DrawTextureEx(blueUnitTexture, new Vector2(GRID_X + bluePos.X, GRID_Y + bluePos.Y), 0F, 0.8F, WHITE);
 
                     // Draw red sprite at grid cell 2,7
-                    DrawTextureRec(redUnitTexture, new Rectangle(0, 0, 64, 64), new Vector2(128, 448), WHITE);
+                    DrawTextureEx(redUnitTexture, new Vector2(GRID_X + redPos.X, GRID_Y + redPos.Y), -180F, 0.8F, WHITE);
 
                     // Draw grid of lines
-                    for (int i = 0; i < 8; i++)
+                    for (int i = 0; i < 11; i++)
                     {
-                        DrawLine(100 + i * 100, 100, 100 + i * 100, 700, BLACK);
-                        DrawLine(100, 100 + i * 100, 700, 100 + i * 100, BLACK);
+                        DrawLine(GRID_X + i * CELL_WIDTH, GRID_Y, GRID_X + i * CELL_WIDTH, 700, BLACK);
+                        DrawLine(GRID_X, GRID_Y + i * CELL_HEIGHT, 700, GRID_Y + i * CELL_HEIGHT, BLACK);
                     }
 				EndDrawing();
 			}
