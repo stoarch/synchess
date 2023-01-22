@@ -48,10 +48,15 @@ namespace SyncChess {
                     this.cellWidth,
                     this.cellHeight);
 
-            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) &&
-                    CheckCollisionPointRec(mousePosition, rect))
-            {
-                selected = true;
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+                if(CheckCollisionPointRec(mousePosition, rect))
+                {
+                    selected = true;
+                }
+                else
+                {
+                    selected = false;
+                }
             }
         }
 
