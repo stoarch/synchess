@@ -91,14 +91,10 @@ namespace SyncChess
 
         private static void DrawGrid()
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i <= 8; i++)
             {
-                for (int j = 0; j < 8; j++)
-                {
-                     DrawLine(GRID_X + i * CELL_WIDTH, GRID_Y, GRID_X + i * CELL_WIDTH, 700, BLACK);
-                     DrawLine(GRID_X, GRID_Y + i * CELL_HEIGHT, 700, GRID_Y + i * CELL_HEIGHT, BLACK);
-
-                }
+                DrawLine(GRID_X, GRID_Y + i * CELL_HEIGHT, GRID_X + 8 * CELL_WIDTH, GRID_Y + i * CELL_HEIGHT, BLACK);
+                DrawLine(GRID_X + i * CELL_WIDTH, GRID_Y, GRID_X + i * CELL_WIDTH, GRID_Y + 8 * CELL_HEIGHT, BLACK);
             }
         }
 	}//Game
