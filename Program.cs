@@ -27,24 +27,40 @@ namespace SyncChess
 
             // load blue unit texture
             Texture2D blueUnitTexture = LoadTexture("resources/circle/blue.png");
+            Texture2D blueUnitSelectedTexture = LoadTexture("resources/square/blue.png");
             // load red unit texture
             Texture2D redUnitTexture = LoadTexture("resources/circle/red.png");
+            Texture2D redUnitSelectedTexture = LoadTexture("resources/square/red.png");
+
 
             var bluePos = new Vector2(0, 0);
             var redPos = new Vector2(7, 7);
-            var blueCharacter = new Character(blueUnitTexture, bluePos, 0F, 0.8F);
-            var redCharacter = new Character(redUnitTexture, redPos, -180F, 0.8F);
+            var blueCharacter = new Character(blueUnitTexture, blueUnitSelectedTexture, bluePos, 0F, 0.8F);
+            blueCharacter.SetGrid(GRID_X, GRID_Y, CELL_WIDTH, CELL_HEIGHT);
+
+            var redCharacter = new Character(redUnitTexture, redUnitSelectedTexture, redPos, -180F, 0.8F);
+            redCharacter.SetGrid(GRID_X, GRID_Y, CELL_WIDTH, CELL_HEIGHT);
+
+            var mousePosition = new Vector2();
 
 
 			while(!WindowShouldClose())
 			{
+                //Check input//
+                mousePosition = GetMousePosition();
+
+                blueCharacter.HandleInput(mousePosition);
+
+                //Update scene//
+
+                //Draw scene//
 				BeginDrawing();
 					ClearBackground(SKYBLUE);
 					DrawFPS(10,10);
 					DrawText("SyncChess", 100, 10, 30, WHITE);
 
-                    blueCharacter.Draw(GRID_X, GRID_Y, CELL_WIDTH, CELL_HEIGHT);
-                    redCharacter.Draw(GRID_X, GRID_Y, CELL_WIDTH, CELL_HEIGHT);
+                    blueCharacter.Draw();
+                    redCharacter.Draw();
 
                     // Draw grid of lines
                     for (int i = 0; i < 11; i++)
