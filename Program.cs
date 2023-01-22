@@ -55,7 +55,7 @@ namespace SyncChess
 
                 //Update scene//
                 bool drawCellHighlighted = false;
-                if(blueCharacter.Selected)
+                if(blueCharacter.Selected && !blueCharacter.MouseOver)
                 {
                     drawCellHighlighted = true;
                 }

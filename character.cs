@@ -20,9 +20,11 @@ namespace SyncChess {
         private int gridY;
         private int cellWidth;
         private int cellHeight;
+        private bool mouseOver;
 
         public bool Selected => selected;
         public Vector2 Position => position;
+        public bool MouseOver => mouseOver;
 
 
         public Character(Texture2D texture, Texture2D selectedTexture, Vector2 position, float rotation, float scale)
@@ -51,8 +53,10 @@ namespace SyncChess {
                     this.cellWidth,
                     this.cellHeight);
 
+            mouseOver = CheckCollisionPointRec(mousePosition, rect);
+
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
-                if(CheckCollisionPointRec(mousePosition, rect))
+                if(mouseOver)
                 {
                     selected = true;
                 }
@@ -66,7 +70,11 @@ namespace SyncChess {
         public void Draw()
         {
             if(selected){
-                DrawTextureEx(selectedTexture, new Vector2(gridX + position.X, gridY + position.Y), rotation, scale, WHITE);
+                if(mouseOver){
+                    DrawTextureEx(selectedTexture, new Vector2(gridX + position.X, gridY + position.Y), rotation, scale, YELLOW);
+                }else{
+                    DrawTextureEx(selectedTexture, new Vector2(gridX + position.X, gridY + position.Y), rotation, scale, WHITE);
+                }
             }else{
                 DrawTextureEx(texture, new Vector2(gridX + position.X * cellWidth, gridY + position.Y * cellHeight), rotation, scale, WHITE);
             }
