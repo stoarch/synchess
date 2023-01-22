@@ -71,8 +71,13 @@ namespace SyncChess
 
                     if(drawCellHighlighted)
                     {
+                        var mouseGridPos = new Vector2(
+                            (int)(mousePosition.X - GRID_X) / CELL_WIDTH,
+                            (int)(mousePosition.Y - GRID_Y) / CELL_HEIGHT
+                        );
                         //Draw highlighted texture over grid cell
-                        DrawTextureEx(cellHighlightedTexture, new Vector2(GRID_X + (CELL_WIDTH * (int)blueCharacter.Position.X), GRID_Y + (CELL_HEIGHT * (int)blueCharacter.Position.Y)), 0F, 0.8F, WHITE);
+                        DrawTextureEx(cellHighlightedTexture,new Vector2(GRID_X + (CELL_WIDTH * (int)mouseGridPos.X), GRID_Y + (CELL_HEIGHT * (int)mouseGridPos.Y)),0,CELL_WIDTH/cellHighlightedTexture.width, WHITE);
+
                     }
 
                     DrawGrid();
