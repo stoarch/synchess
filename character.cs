@@ -21,6 +21,9 @@ namespace SyncChess {
         private int cellWidth;
         private int cellHeight;
 
+        public bool Selected => selected;
+        public Vector2 Position => position;
+
 
         public Character(Texture2D texture, Texture2D selectedTexture, Vector2 position, float rotation, float scale)
         {

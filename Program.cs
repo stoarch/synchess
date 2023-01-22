@@ -32,6 +32,8 @@ namespace SyncChess
             Texture2D redUnitTexture = LoadTexture("resources/circle/red.png");
             Texture2D redUnitSelectedTexture = LoadTexture("resources/square/red.png");
 
+            // cell highlighted texture
+            Texture2D cellHighlightedTexture = LoadTexture("resources/tile/wall-1111.png");
 
             var bluePos = new Vector2(0, 0);
             var redPos = new Vector2(7, 7);
@@ -52,6 +54,11 @@ namespace SyncChess
                 blueCharacter.HandleInput(mousePosition);
 
                 //Update scene//
+                bool drawCellHighlighted = false;
+                if(blueCharacter.Selected)
+                {
+                    drawCellHighlighted = true;
+                }
 
                 //Draw scene//
 				BeginDrawing();
@@ -62,19 +69,38 @@ namespace SyncChess
                     blueCharacter.Draw();
                     redCharacter.Draw();
 
-                    // Draw grid of lines
-                    for (int i = 0; i < 11; i++)
+                    if(drawCellHighlighted)
                     {
-                        DrawLine(GRID_X + i * CELL_WIDTH, GRID_Y, GRID_X + i * CELL_WIDTH, 700, BLACK);
-                        DrawLine(GRID_X, GRID_Y + i * CELL_HEIGHT, 700, GRID_Y + i * CELL_HEIGHT, BLACK);
+                        //Draw highlighted texture over grid cell
+                        DrawTextureEx(cellHighlightedTexture, new Vector2(GRID_X + (CELL_WIDTH * (int)blueCharacter.Position.X), GRID_Y + (CELL_HEIGHT * (int)blueCharacter.Position.Y)), 0F, 0.8F, WHITE);
                     }
+
+                    DrawGrid();
+
 				EndDrawing();
 			}
 
             UnloadTexture(blueUnitTexture);
             UnloadTexture(redUnitTexture);
+            UnloadTexture(blueUnitSelectedTexture);
+            UnloadTexture(redUnitSelectedTexture);
+
 
 			CloseWindow();
 		}
-	}
+
+        private static void DrawGrid()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                     DrawLine(GRID_X + i * CELL_WIDTH, GRID_Y, GRID_X + i * CELL_WIDTH, 700, BLACK);
+                     DrawLine(GRID_X, GRID_Y + i * CELL_HEIGHT, 700, GRID_Y + i * CELL_HEIGHT, BLACK);
+
+                }
+            }
+        }
+	}//Game
+
 }
