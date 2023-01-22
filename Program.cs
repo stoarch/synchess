@@ -10,9 +10,7 @@ using Rectangle = Raylib_CsLo.Rectangle;
 
 using System;
 
-using static Raylib_CsLo.Raylib;
-
-namespace BoomTris 
+namespace SyncChess
 {
 	public class Game
 	{
@@ -32,6 +30,12 @@ namespace BoomTris
             // load red unit texture
             Texture2D redUnitTexture = LoadTexture("resources/circle/red.png");
 
+            var bluePos = new Vector2(0, 0);
+            var redPos = new Vector2(7, 7);
+            var blueCharacter = new Character(blueUnitTexture, bluePos, 0F, 0.8F);
+            var redCharacter = new Character(redUnitTexture, redPos, -180F, 0.8F);
+
+
 			while(!WindowShouldClose())
 			{
 				BeginDrawing();
@@ -39,14 +43,8 @@ namespace BoomTris
 					DrawFPS(10,10);
 					DrawText("SyncChess", 100, 10, 30, WHITE);
 
-                    var bluePos = new Vector2(0, 0);
-                    var redPos = new Vector2(512, 512);
-
-                    // Draw blue sprite at grid cell 1,1
-                    DrawTextureEx(blueUnitTexture, new Vector2(GRID_X + bluePos.X, GRID_Y + bluePos.Y), 0F, 0.8F, WHITE);
-
-                    // Draw red sprite at grid cell 2,7
-                    DrawTextureEx(redUnitTexture, new Vector2(GRID_X + redPos.X, GRID_Y + redPos.Y), -180F, 0.8F, WHITE);
+                    blueCharacter.Draw(GRID_X, GRID_Y, CELL_WIDTH, CELL_HEIGHT);
+                    redCharacter.Draw(GRID_X, GRID_Y, CELL_WIDTH, CELL_HEIGHT);
 
                     // Draw grid of lines
                     for (int i = 0; i < 11; i++)
