@@ -6,8 +6,8 @@ using Texture2D = Raylib_CsLo.Texture;
 using Rectangle = Raylib_CsLo.Rectangle;
 using System.Numerics;
 
-namespace SyncChess {
-
+namespace SyncChess
+{
     public class Character
     {
         private Texture2D texture;
@@ -26,8 +26,13 @@ namespace SyncChess {
         public Vector2 Position => position;
         public bool MouseOver => mouseOver;
 
-
-        public Character(Texture2D texture, Texture2D selectedTexture, Vector2 position, float rotation, float scale)
+        public Character(
+            Texture2D texture,
+            Texture2D selectedTexture,
+            Vector2 position,
+            float rotation,
+            float scale
+        )
         {
             this.texture = texture;
             this.selectedTexture = selectedTexture;
@@ -48,15 +53,18 @@ namespace SyncChess {
 
         public void HandleInput(Vector2 mousePosition)
         {
-            Rectangle rect = new Rectangle(this.gridX + position.X,
-                    this.gridY + position.Y,
-                    this.cellWidth,
-                    this.cellHeight);
+            Rectangle rect = new Rectangle(
+                this.gridX + position.X,
+                this.gridY + position.Y,
+                this.cellWidth,
+                this.cellHeight
+            );
 
             mouseOver = CheckCollisionPointRec(mousePosition, rect);
 
-            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
-                if(mouseOver)
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
+                if (mouseOver)
                 {
                     selected = true;
                 }
@@ -69,14 +77,38 @@ namespace SyncChess {
 
         public void Draw()
         {
-            if(selected){
-                if(mouseOver){
-                    DrawTextureEx(selectedTexture, new Vector2(gridX + position.X, gridY + position.Y), rotation, scale, YELLOW);
-                }else{
-                    DrawTextureEx(selectedTexture, new Vector2(gridX + position.X, gridY + position.Y), rotation, scale, WHITE);
+            if (selected)
+            {
+                if (mouseOver)
+                {
+                    DrawTextureEx(
+                        selectedTexture,
+                        new Vector2(gridX + position.X, gridY + position.Y),
+                        rotation,
+                        scale,
+                        YELLOW
+                    );
                 }
-            }else{
-                DrawTextureEx(texture, new Vector2(gridX + position.X * cellWidth, gridY + position.Y * cellHeight), rotation, scale, WHITE);
+                else
+                {
+                    DrawTextureEx(
+                        selectedTexture,
+                        new Vector2(gridX + position.X, gridY + position.Y),
+                        rotation,
+                        scale,
+                        WHITE
+                    );
+                }
+            }
+            else
+            {
+                DrawTextureEx(
+                    texture,
+                    new Vector2(gridX + position.X * cellWidth, gridY + position.Y * cellHeight),
+                    rotation,
+                    scale,
+                    WHITE
+                );
             }
         }
 
