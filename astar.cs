@@ -31,6 +31,11 @@ namespace SyncChess
             startNode.G = 0;
             startNode.H = GetH(startNode, endX, endY);
             startNode.F = startNode.G + startNode.H;
+
+            //G - distance from start to current nodes
+            //H - distance from current node to end nodes
+            //F - G + H - total cost of the path
+
             startNode.Parent = null;
 
             // Add the start node to the open list
@@ -168,7 +173,7 @@ namespace SyncChess
 
         private int GetH(AStarNode node, int endX, int endY)
         {
-            // Use the Manhattan method for calculating H
+            // Use the Manhattan method for calculating H - the distance between the current node and the end node
             return Math.Abs(node.X - endX) + Math.Abs(node.Y - endY);
         }
     }
@@ -177,9 +182,9 @@ namespace SyncChess
     {
         public int X;
         public int Y;
-        public int G;
-        public int H;
-        public int F;
+        public int G; // distance from start to current nodes
+        public int H; // distance from current node to end nodes
+        public int F; // G + H - total cost of the path
         public AStarNode Parent;
 
         public AStarNode(int x, int y)
