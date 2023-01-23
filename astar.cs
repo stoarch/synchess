@@ -47,10 +47,16 @@ public class AStar
             // Get the node with the lowest F value
             AStarNode currentNode = openList[0];
 
+            //Check if it blocker
+            if (map[currentNode.X, currentNode.Y] == 1)
+            {
+                currentNode.F = int.MaxValue;
+            }
+
             // Loop through the open list to find the node with the lowest F value
             for (int i = 0; i < openList.Count; i++)
             {
-                if (openList[i].F < currentNode.F)
+                if (openList[i].F < currentNode.F) // if the cost of the current node is less than the cost of the node we are checking
                 {
                     currentNode = openList[i];
                 }

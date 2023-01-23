@@ -183,7 +183,7 @@ namespace SyncChess
             {
                 for (int x = 0; x < grid.GetLength(1); x++)
                 {
-                    if (grid[y, x] == 1)
+                    if (grid[x, y] == 1)
                     {
                         DrawRectangle(
                             GRID_X + x * CELL_WIDTH,
