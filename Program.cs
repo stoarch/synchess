@@ -167,6 +167,24 @@ public class Game
                 BLACK
             );
         }
+
+        //Draw blocker cells
+        for (int y = 0; y < grid.GetLength(0); y++)
+        {
+            for (int x = 0; x < grid.GetLength(1); x++)
+            {
+                if (grid[y, x] == 1)
+                {
+                    DrawRectangle(
+                        GRID_X + x * CELL_WIDTH,
+                        GRID_Y + y * CELL_HEIGHT,
+                        CELL_WIDTH,
+                        CELL_HEIGHT,
+                        BLACK
+                    );
+                }
+            }
+        }
     }
 } //Game
 }
