@@ -108,6 +108,8 @@ namespace SyncChess
                 blueCharacter.Draw();
                 redCharacter.Draw();
 
+                DrawGrid();
+
                 if (drawCellHighlighted)
                 {
                     //Draw path
@@ -118,6 +120,15 @@ namespace SyncChess
                                 cellHighlightedTexture,
                                 GRID_X + node.X * CELL_WIDTH + CELL_WIDTH/2 - cellHighlightedTexture.width/2,
                                 GRID_Y + node.Y * CELL_HEIGHT + CELL_HEIGHT/2 - cellHighlightedTexture.height/2,
+                                WHITE
+                            );
+
+                            //Draw path text position
+                            DrawText(
+                                node.X + "," + node.Y,
+                                GRID_X + node.X * CELL_WIDTH + CELL_WIDTH - 30,
+                                GRID_Y + node.Y * CELL_HEIGHT + CELL_HEIGHT - 20,
+                                20,
                                 WHITE
                             );
                         }
@@ -135,7 +146,6 @@ namespace SyncChess
                     );
                 }
 
-                DrawGrid();
 
                 EndDrawing();
             }
