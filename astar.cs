@@ -95,7 +95,11 @@ public class AStar
                     continue;
                 }
 
-                // Set the G, H, and F values
+                // Set the G, H, and F values -
+                // G = distance from start to current node
+                // H = distance from current node to end node
+                // F = G + H - total cost of the path
+                //
                 // If the adjacent node is in the open list, check to see if this path to the node is better, using G cost as the measure
                 // If it is a better path, change the parent of the node and recalculate the G and F scores
                 // If the node is not in the open list, calculate the G and F scores and set the parent then add it to the open lists
