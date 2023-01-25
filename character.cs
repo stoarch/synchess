@@ -218,6 +218,9 @@ namespace SyncChess
                             {
                                 Moving = false;
                             }
+
+                            //Move character on last cell center
+                            position = targetPosition;
                         }
                     }
                 }
