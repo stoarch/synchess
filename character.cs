@@ -113,13 +113,7 @@ namespace SyncChess
             //Draw flag that path is set
             if (path != null)
             {
-                DrawRectangle(
-                    (int)position.X + gridX,
-                    (int)position.Y + gridY,
-                    10,
-                    10,
-                    RED
-                );
+                DrawRectangle((int)position.X + gridX, (int)position.Y + gridY, 10, 10, RED);
             }
             //Draw the character
             if (selected)
@@ -209,6 +203,10 @@ namespace SyncChess
                         if (distance > 0.1f)
                         {
                             position += direction * speed * dt;
+                            //Rotate towards next node gradually
+                            rotation = Lerp(rotation, Rad2Deg(Vector2ToAngle(direction)), 0.1f);
+                            //Display rotation
+                            DrawText($"Rotation: {rotation}", 600, 70, 20, BLUE);
                         }
                         else
                         {
@@ -240,9 +238,20 @@ namespace SyncChess
         {
             return path;
         }
+
         public void SetPath(List<AStarNode> path)
         {
             this.path = path;
+        }
+
+        private float Vector2ToAngle(Vector2 vector)
+        {
+            return (float)Math.Atan2(vector.Y, vector.X);
+        }
+
+        private float Rad2Deg(float rad)
+        {
+            return rad * (180.0f / (float)Math.PI);
         }
     }
 }

@@ -106,9 +106,11 @@ namespace SyncChess
                         (int)mouseGridPos.Y
                     );
 
-                    if(path == null)
-                        TraceLog(LOG_INFO, "Path undefined from " + blueCharacter.Position + " to " + mouseGridPos);
-
+                    if (path == null)
+                        TraceLog(
+                            LOG_INFO,
+                            "Path undefined from " + blueCharacter.Position + " to " + mouseGridPos
+                        );
                 }
 
                 //If mouse clicked on cell, move Character
@@ -119,7 +121,6 @@ namespace SyncChess
 
                     //Log path information
                     TraceLog(3, "Path setting:" + path.Count);
-
 
                     if (path.Count > 0)
                     {
@@ -227,13 +228,14 @@ namespace SyncChess
                         );
 
                         DrawText("Path length: " + path.Count, 10, 350, 20, fadePathColor);
-                        DrawText(
-                            "Path cost: " + path[path.Count - 1].G,
-                            10,
-                            370,
-                            20,
-                            fadePathColor
-                        );
+                        if (path.Count > 0)
+                            DrawText(
+                                "Path cost: " + path[path.Count - 1].G,
+                                10,
+                                370,
+                                20,
+                                fadePathColor
+                            );
 
                         pathDebugFadeTimeout -= dt;
                     }
