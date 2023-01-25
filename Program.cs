@@ -149,16 +149,6 @@ namespace SyncChess
 
                 if (drawCellHighlighted)
                 {
-                    DrawText($"Char path: {blueCharacter.GetPath()}", 10, 310, 20, WHITE);
-                    if (path != null)
-                    {
-                        DrawText("Path length: " + path.Count, 10, 350, 20, WHITE);
-                        DrawText($"Path:{path}", 10, 370, 20, WHITE);
-
-                        if ((path?.Count > 0) && (path[path.Count - 1] != null))
-                            DrawText("Path cost: " + path[path.Count - 1].G, 10, 390, 20, WHITE);
-                    }
-
                     //Draw path
                     if (path != null)
                         foreach (var node in path)
@@ -173,15 +163,6 @@ namespace SyncChess
                                     + node.Y * CELL_HEIGHT
                                     + CELL_HEIGHT / 2
                                     - cellHighlightedTexture.height / 2,
-                                WHITE
-                            );
-
-                            //Draw path text position
-                            DrawText(
-                                node.X + "," + node.Y,
-                                GRID_X + node.X * CELL_WIDTH + CELL_WIDTH - 30,
-                                GRID_Y + node.Y * CELL_HEIGHT + CELL_HEIGHT - 20,
-                                20,
                                 WHITE
                             );
                         }
@@ -201,103 +182,6 @@ namespace SyncChess
 
                 //Draw debug info
 
-                //Display mouse pressed info
-                //Fade out after 1 second
-                if (debugFadeTimeout > 0)
-                {
-                    //Color fade out by delta time
-                    Color fadeColor = new Color(
-                        (byte)255,
-                        (byte)255,
-                        (byte)255,
-                        (byte)(255 * debugFadeTimeout)
-                    );
-
-                    DrawText("Mouse pressed", 10, 250, 20, fadeColor);
-                    debugFadeTimeout -= dt;
-
-                    //Draw path info
-                    if (pathDebugFadeTimeout > 0)
-                    {
-                        //Color fade out by delta time
-                        Color fadePathColor = new Color(
-                            (byte)255,
-                            (byte)255,
-                            (byte)255,
-                            (byte)(255 * pathDebugFadeTimeout)
-                        );
-
-                        DrawText("Path length: " + path.Count, 10, 350, 20, fadePathColor);
-                        if (path.Count > 0)
-                            DrawText(
-                                "Path cost: " + path[path.Count - 1].G,
-                                10,
-                                370,
-                                20,
-                                fadePathColor
-                            );
-
-                        pathDebugFadeTimeout -= dt;
-                    }
-                }
-                //If first time pressed start fading
-                else if (leftPressed)
-                {
-                    debugFadeTimeout = 1F;
-                }
-
-                //Draw character movement and status
-                DrawText("Character movement: " + blueCharacter.Moving, 10, 50, 20, WHITE);
-                DrawText("Character selected: " + blueCharacter.Selected, 10, 70, 20, WHITE);
-                //Show current path node for character
-                if (blueCharacter.CurrentPathNode != null)
-                {
-                    DrawText(
-                        "Current path node: "
-                            + blueCharacter.CurrentPathNode.X
-                            + ","
-                            + blueCharacter.CurrentPathNode.Y,
-                        10,
-                        90,
-                        20,
-                        WHITE
-                    );
-                }
-                //Show next path node for character
-                if (blueCharacter.NextPathNode != null)
-                {
-                    DrawText(
-                        "Next path node: "
-                            + blueCharacter.NextPathNode.X
-                            + ","
-                            + blueCharacter.NextPathNode.Y,
-                        10,
-                        110,
-                        20,
-                        WHITE
-                    );
-                }
-                //Show character position in grid coord
-                DrawText(
-                    "Character pos: " + blueCharacter.Position.X + "," + blueCharacter.Position.Y,
-                    300,
-                    150,
-                    20,
-                    WHITE
-                );
-
-                //Show character pixel perfect position
-                var charPos = new Vector2(
-                    GRID_X + blueCharacter.Position.X * CELL_WIDTH + CELL_WIDTH / 2,
-                    GRID_Y + blueCharacter.Position.Y * CELL_HEIGHT + CELL_HEIGHT / 2
-                );
-                DrawText(
-                    "Character pixel pos: " + charPos.X + "," + charPos.Y,
-                    300,
-                    170,
-                    20,
-                    WHITE
-                );
 
                 EndDrawing();
             }

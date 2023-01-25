@@ -5,6 +5,7 @@ using static Raylib_CsLo.RayMath;
 using Texture2D = Raylib_CsLo.Texture;
 using Rectangle = Raylib_CsLo.Rectangle;
 using System.Numerics;
+using static Raylib_CsLo.TraceLogLevel;
 
 namespace SyncChess
 {
@@ -87,13 +88,22 @@ namespace SyncChess
         public void HandleInput(Vector2 mousePosition)
         {
             Rectangle rect = new Rectangle(
-                this.gridX + position.X,
-                this.gridY + position.Y,
+                this.gridX + position.X*cellWidth,
+                this.gridY + position.Y*cellHeight,
                 this.cellWidth,
                 this.cellHeight
             );
 
             mouseOver = CheckCollisionPointRec(mousePosition, rect);
+
+            //Display mouse over status
+            if (mouseOver)
+            {
+                TraceLog(LOG_INFO, "Mouse over character");
+                TraceLog(LOG_INFO, "Mouse position: " + mousePosition);
+                TraceLog(LOG_INFO, "Character position: " + position);
+                TraceLog(LOG_INFO, "Character rect: " + rect.X + ", " + rect.Y + ", " + rect.width + ", " + rect.height);
+            }
 
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
@@ -149,7 +159,7 @@ namespace SyncChess
                         ),
                         new Vector2(cellWidth / 2, cellHeight / 2),
                         rotation,
-                        WHITE
+                        BLUE
                     );
                 }
             }
@@ -174,23 +184,6 @@ namespace SyncChess
 
         public void Update(float dt)
         {
-            //Display dt and Moving status
-            DrawText(dt.ToString(), 10, 100, 20, WHITE);
-            DrawText($"Moving: {Moving.ToString()}", 10, 120, 20, WHITE);
-            //Display path information
-            if (path != null)
-            {
-                DrawText($"Path Count: {path.Count}", 10, 140, 20, WHITE);
-                if (path.Count > 0)
-                {
-                    DrawText($"Current Path Node: {path[0].X}, {path[0].Y}", 10, 160, 20, WHITE);
-                }
-                if (path.Count > 1)
-                {
-                    DrawText($"Next Path Node: {path[1].X}, {path[1].Y}", 10, 180, 20, WHITE);
-                }
-            }
-
             //If path present and we're moving, make one step
             if (Moving)
                 if (path != null)
@@ -216,18 +209,11 @@ namespace SyncChess
                             2,
                             RED
                         );
-                        //Display position
-                        DrawText($"Position: {position.X}, {position.Y}", 100, 10, 20, WHITE);
-                        //Display last path nodes count
-                        DrawText($"Path nodes: {path.Count}", 100, 40, 20, WHITE);
-
                         if (distance > 0.1f)
                         {
                             position += direction * speed * dt;
                             //Rotate towards next node gradually
                             rotation = Lerp(rotation, Rad2Deg(Vector2ToAngle(direction)), 0.1f);
-                            //Display rotation
-                            DrawText($"Rotation: {rotation}", 600, 70, 20, BLUE);
                         }
                         else
                         {
