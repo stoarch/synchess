@@ -21,10 +21,43 @@ namespace SyncChess
         private int cellWidth;
         private int cellHeight;
         private bool mouseOver;
+        private List<AStarNode> path;
+        private float speed = 1.0f;
 
         public bool Selected => selected;
         public Vector2 Position => position;
         public bool MouseOver => mouseOver;
+        public bool Moving { get; set; }
+
+        public AStarNode CurrentPathNode
+        {
+            get
+            {
+                if (path?.Count > 0)
+                {
+                    return path[0];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        public AStarNode NextPathNode
+        {
+            get
+            {
+                if (path?.Count > 1)
+                {
+                    return path[1];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         public Character(
             Texture2D texture,
@@ -77,6 +110,18 @@ namespace SyncChess
 
         public void Draw()
         {
+            //Draw flag that path is set
+            if (path != null)
+            {
+                DrawRectangle(
+                    (int)position.X + gridX,
+                    (int)position.Y + gridY,
+                    10,
+                    10,
+                    RED
+                );
+            }
+            //Draw the character
             if (selected)
             {
                 if (mouseOver)
@@ -112,6 +157,72 @@ namespace SyncChess
             }
         }
 
+        public void Update(float dt)
+        {
+            //Display dt and Moving status
+            DrawText(dt.ToString(), 10, 100, 20, WHITE);
+            DrawText($"Moving: {Moving.ToString()}", 10, 120, 20, WHITE);
+            //Display path information
+            if (path != null)
+            {
+                DrawText($"Path Count: {path.Count}", 10, 140, 20, WHITE);
+                if (path.Count > 0)
+                {
+                    DrawText($"Current Path Node: {path[0].X}, {path[0].Y}", 10, 160, 20, WHITE);
+                }
+                if (path.Count > 1)
+                {
+                    DrawText($"Next Path Node: {path[1].X}, {path[1].Y}", 10, 180, 20, WHITE);
+                }
+            }
+
+            //If path present and we're moving, make one step
+            if (Moving)
+                if (path != null)
+                {
+                    if (path.Count > 0)
+                    {
+                        var target = path[0];
+                        var targetPosition = new Vector2(target.X, target.Y);
+
+                        var direction = Vector2.Normalize(targetPosition - position);
+                        var distance = Vector2.Distance(targetPosition, position);
+
+                        //Display direction and distance
+                        DrawLineEx(
+                            new Vector2(
+                                gridX + position.X * cellWidth + cellWidth / 2,
+                                gridY + position.Y * cellHeight + cellHeight / 2
+                            ),
+                            new Vector2(
+                                gridX + targetPosition.X * cellWidth + cellWidth / 2,
+                                gridY + targetPosition.Y * cellHeight + cellHeight / 2
+                            ),
+                            2,
+                            RED
+                        );
+                        //Display position
+                        DrawText($"Position: {position.X}, {position.Y}", 100, 10, 20, WHITE);
+                        //Display last path nodes count
+                        DrawText($"Path nodes: {path.Count}", 100, 40, 20, WHITE);
+
+                        if (distance > 0.1f)
+                        {
+                            position += direction * speed * dt;
+                        }
+                        else
+                        {
+                            path.RemoveAt(0);
+
+                            if (path.Count == 0)
+                            {
+                                Moving = false;
+                            }
+                        }
+                    }
+                }
+        }
+
         public void Move(Vector2 newPosition)
         {
             position = newPosition;
@@ -120,6 +231,15 @@ namespace SyncChess
         public Vector2 GetPosition()
         {
             return position;
+        }
+
+        public List<AStarNode> GetPath()
+        {
+            return path;
+        }
+        public void SetPath(List<AStarNode> path)
+        {
+            this.path = path;
         }
     }
 }

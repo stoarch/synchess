@@ -7,9 +7,13 @@ using static Raylib_CsLo.RayMath;
 
 using Texture2D = Raylib_CsLo.Texture;
 using Rectangle = Raylib_CsLo.Rectangle;
+using Color = Raylib_CsLo.Color;
 
 using System;
 using System.Drawing;
+
+using Raylib_CsLo.InternalHelpers;
+using static Raylib_CsLo.TraceLogLevel;
 
 namespace SyncChess
 {
@@ -25,10 +29,10 @@ namespace SyncChess
             { 0, 0, 1, 0, 0, 0, 0, 0 },
             { 0, 0, 1, 0, 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 1, 0, 0, 0 },
+            { 0, 0, 0, 1, 1, 0, 0, 0 },
             { 0, 0, 0, 0, 1, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 1, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0 }
         };
 
@@ -70,6 +74,9 @@ namespace SyncChess
             var mousePosition = new Vector2();
             List<AStarNode> path = new List<AStarNode>();
 
+            float debugFadeTimeout = 0F;
+            float pathDebugFadeTimeout = 0F;
+
             while (!WindowShouldClose())
             {
                 //Check input//
@@ -79,9 +86,10 @@ namespace SyncChess
                     (int)(mousePosition.Y - GRID_Y) / CELL_HEIGHT
                 );
 
+                bool leftPressed = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
+
                 blueCharacter.HandleInput(mousePosition);
 
-                //Update scene//
                 bool drawCellHighlighted = false;
                 if (blueCharacter.Selected && !blueCharacter.MouseOver)
                 {
@@ -97,7 +105,35 @@ namespace SyncChess
                         (int)mouseGridPos.X,
                         (int)mouseGridPos.Y
                     );
+
+                    if(path == null)
+                        TraceLog(LOG_INFO, "Path undefined from " + blueCharacter.Position + " to " + mouseGridPos);
+
                 }
+
+                //If mouse clicked on cell, move Character
+                if (leftPressed && path != null && path.Count > 0)
+                {
+                    //Display path information fading 1s
+                    pathDebugFadeTimeout = 1F;
+
+                    //Log path information
+                    TraceLog(3, "Path setting:" + path.Count);
+
+
+                    if (path.Count > 0)
+                    {
+                        TraceLog(3, "Path set to char:" + path.Count);
+
+                        blueCharacter.SetPath(path);
+                        blueCharacter.Moving = true;
+                    }
+                }
+
+                //Update scene//
+                float dt = GetFrameTime();
+
+                blueCharacter.Update(dt);
 
                 //Draw scene//
                 BeginDrawing();
@@ -112,14 +148,30 @@ namespace SyncChess
 
                 if (drawCellHighlighted)
                 {
+                    DrawText($"Char path: {blueCharacter.GetPath()}", 10, 310, 20, WHITE);
+                    if (path != null)
+                    {
+                        DrawText("Path length: " + path.Count, 10, 350, 20, WHITE);
+                        DrawText($"Path:{path}", 10, 370, 20, WHITE);
+
+                        if ((path?.Count > 0) && (path[path.Count - 1] != null))
+                            DrawText("Path cost: " + path[path.Count - 1].G, 10, 390, 20, WHITE);
+                    }
+
                     //Draw path
                     if (path != null)
                         foreach (var node in path)
                         {
                             DrawTexture(
                                 cellHighlightedTexture,
-                                GRID_X + node.X * CELL_WIDTH + CELL_WIDTH/2 - cellHighlightedTexture.width/2,
-                                GRID_Y + node.Y * CELL_HEIGHT + CELL_HEIGHT/2 - cellHighlightedTexture.height/2,
+                                GRID_X
+                                    + node.X * CELL_WIDTH
+                                    + CELL_WIDTH / 2
+                                    - cellHighlightedTexture.width / 2,
+                                GRID_Y
+                                    + node.Y * CELL_HEIGHT
+                                    + CELL_HEIGHT / 2
+                                    - cellHighlightedTexture.height / 2,
                                 WHITE
                             );
 
@@ -146,6 +198,104 @@ namespace SyncChess
                     );
                 }
 
+                //Draw debug info
+
+                //Display mouse pressed info
+                //Fade out after 1 second
+                if (debugFadeTimeout > 0)
+                {
+                    //Color fade out by delta time
+                    Color fadeColor = new Color(
+                        (byte)255,
+                        (byte)255,
+                        (byte)255,
+                        (byte)(255 * debugFadeTimeout)
+                    );
+
+                    DrawText("Mouse pressed", 10, 250, 20, fadeColor);
+                    debugFadeTimeout -= dt;
+
+                    //Draw path info
+                    if (pathDebugFadeTimeout > 0)
+                    {
+                        //Color fade out by delta time
+                        Color fadePathColor = new Color(
+                            (byte)255,
+                            (byte)255,
+                            (byte)255,
+                            (byte)(255 * pathDebugFadeTimeout)
+                        );
+
+                        DrawText("Path length: " + path.Count, 10, 350, 20, fadePathColor);
+                        DrawText(
+                            "Path cost: " + path[path.Count - 1].G,
+                            10,
+                            370,
+                            20,
+                            fadePathColor
+                        );
+
+                        pathDebugFadeTimeout -= dt;
+                    }
+                }
+                //If first time pressed start fading
+                else if (leftPressed)
+                {
+                    debugFadeTimeout = 1F;
+                }
+
+                //Draw character movement and status
+                DrawText("Character movement: " + blueCharacter.Moving, 10, 50, 20, WHITE);
+                DrawText("Character selected: " + blueCharacter.Selected, 10, 70, 20, WHITE);
+                //Show current path node for character
+                if (blueCharacter.CurrentPathNode != null)
+                {
+                    DrawText(
+                        "Current path node: "
+                            + blueCharacter.CurrentPathNode.X
+                            + ","
+                            + blueCharacter.CurrentPathNode.Y,
+                        10,
+                        90,
+                        20,
+                        WHITE
+                    );
+                }
+                //Show next path node for character
+                if (blueCharacter.NextPathNode != null)
+                {
+                    DrawText(
+                        "Next path node: "
+                            + blueCharacter.NextPathNode.X
+                            + ","
+                            + blueCharacter.NextPathNode.Y,
+                        10,
+                        110,
+                        20,
+                        WHITE
+                    );
+                }
+                //Show character position in grid coord
+                DrawText(
+                    "Character pos: " + blueCharacter.Position.X + "," + blueCharacter.Position.Y,
+                    300,
+                    150,
+                    20,
+                    WHITE
+                );
+
+                //Show character pixel perfect position
+                var charPos = new Vector2(
+                    GRID_X + blueCharacter.Position.X * CELL_WIDTH + CELL_WIDTH / 2,
+                    GRID_Y + blueCharacter.Position.Y * CELL_HEIGHT + CELL_HEIGHT / 2
+                );
+                DrawText(
+                    "Character pixel pos: " + charPos.X + "," + charPos.Y,
+                    300,
+                    170,
+                    20,
+                    WHITE
+                );
 
                 EndDrawing();
             }
