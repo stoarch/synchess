@@ -120,32 +120,53 @@ namespace SyncChess
             {
                 if (mouseOver)
                 {
-                    DrawTextureEx(
+                    //Draw rotated on center origin
+                    DrawTexturePro(
                         selectedTexture,
-                        new Vector2(gridX + position.X, gridY + position.Y),
+                        new Rectangle(0, 0, selectedTexture.width, selectedTexture.height),
+                        new Rectangle(
+                            position.X*cellWidth + gridX + (cellWidth / 2),
+                            position.Y*cellHeight + gridY + (cellHeight / 2),
+                            cellWidth,
+                            cellHeight
+                        ),
+                        new Vector2(cellWidth / 2, cellHeight / 2),
                         rotation,
-                        scale,
                         YELLOW
                     );
                 }
                 else
                 {
-                    DrawTextureEx(
+                    //Draw rotate on center origin
+                    DrawTexturePro(
                         selectedTexture,
-                        new Vector2(gridX + position.X, gridY + position.Y),
+                        new Rectangle(0, 0, selectedTexture.width, selectedTexture.height),
+                        new Rectangle(
+                            position.X*cellWidth + gridX + (cellWidth / 2),
+                            position.Y*cellHeight + gridY + (cellHeight / 2),
+                            cellWidth,
+                            cellHeight
+                        ),
+                        new Vector2(cellWidth / 2, cellHeight / 2),
                         rotation,
-                        scale,
                         WHITE
                     );
                 }
             }
             else
             {
-                DrawTextureEx(
+                //Draw rotate on origin center
+                DrawTexturePro(
                     texture,
-                    new Vector2(gridX + position.X * cellWidth, gridY + position.Y * cellHeight),
+                    new Rectangle(0, 0, texture.width, texture.height),
+                    new Rectangle(
+                        position.X*cellWidth + gridX + (cellWidth / 2),
+                        position.Y*cellHeight + gridY + (cellHeight / 2),
+                        cellWidth,
+                        cellHeight
+                    ),
+                    new Vector2(cellWidth / 2, cellHeight / 2),
                     rotation,
-                    scale,
                     WHITE
                 );
             }
