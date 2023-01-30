@@ -186,6 +186,42 @@ namespace SyncChess
                 }
             }
 
+            // Check left top diagonal node
+            if (currentNode.X - 1 >= 0 && currentNode.Y - 1 >= 0)
+            {
+                if (map[currentNode.X - 1, currentNode.Y - 1] == 0)
+                {
+                    adjacentNodes.Add(new AStarNode(currentNode.X - 1, currentNode.Y - 1));
+                }
+            }
+
+            // Check right top diagonal node
+            if (currentNode.X + 1 < map.GetLength(0) && currentNode.Y - 1 >= 0)
+            {
+                if (map[currentNode.X + 1, currentNode.Y - 1] == 0)
+                {
+                    adjacentNodes.Add(new AStarNode(currentNode.X + 1, currentNode.Y - 1));
+                }
+            }
+
+            // Check left bottom diagonal node
+            if (currentNode.X - 1 >= 0 && currentNode.Y + 1 < map.GetLength(1))
+            {
+                if (map[currentNode.X - 1, currentNode.Y + 1] == 0)
+                {
+                    adjacentNodes.Add(new AStarNode(currentNode.X - 1, currentNode.Y + 1));
+                }
+            }
+
+            // Check right bottom diagonal node
+            if (currentNode.X + 1 < map.GetLength(0) && currentNode.Y + 1 < map.GetLength(1))
+            {
+                if (map[currentNode.X + 1, currentNode.Y + 1] == 0)
+                {
+                    adjacentNodes.Add(new AStarNode(currentNode.X + 1, currentNode.Y + 1));
+                }
+            }
+
             return adjacentNodes;
         }
 

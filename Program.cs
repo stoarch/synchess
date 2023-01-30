@@ -138,6 +138,7 @@ namespace SyncChess
 
                 //Draw scene//
                 BeginDrawing();
+
                 ClearBackground(SKYBLUE);
                 DrawFPS(10, 10);
                 DrawText("SyncChess", 100, 10, 30, WHITE);
