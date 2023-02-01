@@ -48,9 +48,12 @@ namespace SyncChess
                 AStarNode currentNode = openList[0];
 
                 //Check if it blocker
-                if (map[currentNode.X, currentNode.Y] == 1)
+                if (map[currentNode.X, currentNode.Y] == 9)
                 {
                     currentNode.F = int.MaxValue;
+                }else{
+                    // Get weight for current node from map
+                    currentNode.F = map[currentNode.X, currentNode.Y];
                 }
 
                 // Loop through the open list to find the node with the lowest F value
@@ -153,7 +156,7 @@ namespace SyncChess
             // Check the node above the current node
             if (currentNode.Y - 1 >= 0)
             {
-                if (map[currentNode.X, currentNode.Y - 1] == 0)
+                if (map[currentNode.X, currentNode.Y - 1] < 9)
                 {
                     adjacentNodes.Add(new AStarNode(currentNode.X, currentNode.Y - 1));
                 }
@@ -162,7 +165,7 @@ namespace SyncChess
             // Check the node below the current node
             if (currentNode.Y + 1 < map.GetLength(1))
             {
-                if (map[currentNode.X, currentNode.Y + 1] == 0)
+                if (map[currentNode.X, currentNode.Y + 1] < 9)
                 {
                     adjacentNodes.Add(new AStarNode(currentNode.X, currentNode.Y + 1));
                 }
@@ -171,7 +174,7 @@ namespace SyncChess
             // Check the node to the left of the current node
             if (currentNode.X - 1 >= 0)
             {
-                if (map[currentNode.X - 1, currentNode.Y] == 0)
+                if (map[currentNode.X - 1, currentNode.Y] < 9)
                 {
                     adjacentNodes.Add(new AStarNode(currentNode.X - 1, currentNode.Y));
                 }
@@ -180,7 +183,7 @@ namespace SyncChess
             // Check the node to the right of the current node
             if (currentNode.X + 1 < map.GetLength(0))
             {
-                if (map[currentNode.X + 1, currentNode.Y] == 0)
+                if (map[currentNode.X + 1, currentNode.Y] < 9)
                 {
                     adjacentNodes.Add(new AStarNode(currentNode.X + 1, currentNode.Y));
                 }
@@ -189,7 +192,7 @@ namespace SyncChess
             // Check left top diagonal node
             if (currentNode.X - 1 >= 0 && currentNode.Y - 1 >= 0)
             {
-                if (map[currentNode.X - 1, currentNode.Y - 1] == 0)
+                if (map[currentNode.X - 1, currentNode.Y - 1] < 9)
                 {
                     adjacentNodes.Add(new AStarNode(currentNode.X - 1, currentNode.Y - 1));
                 }
@@ -198,7 +201,7 @@ namespace SyncChess
             // Check right top diagonal node
             if (currentNode.X + 1 < map.GetLength(0) && currentNode.Y - 1 >= 0)
             {
-                if (map[currentNode.X + 1, currentNode.Y - 1] == 0)
+                if (map[currentNode.X + 1, currentNode.Y - 1] < 9)
                 {
                     adjacentNodes.Add(new AStarNode(currentNode.X + 1, currentNode.Y - 1));
                 }
@@ -207,7 +210,7 @@ namespace SyncChess
             // Check left bottom diagonal node
             if (currentNode.X - 1 >= 0 && currentNode.Y + 1 < map.GetLength(1))
             {
-                if (map[currentNode.X - 1, currentNode.Y + 1] == 0)
+                if (map[currentNode.X - 1, currentNode.Y + 1] < 9)
                 {
                     adjacentNodes.Add(new AStarNode(currentNode.X - 1, currentNode.Y + 1));
                 }
@@ -216,7 +219,7 @@ namespace SyncChess
             // Check right bottom diagonal node
             if (currentNode.X + 1 < map.GetLength(0) && currentNode.Y + 1 < map.GetLength(1))
             {
-                if (map[currentNode.X + 1, currentNode.Y + 1] == 0)
+                if (map[currentNode.X + 1, currentNode.Y + 1] < 9)
                 {
                     adjacentNodes.Add(new AStarNode(currentNode.X + 1, currentNode.Y + 1));
                 }

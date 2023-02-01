@@ -26,14 +26,14 @@ namespace SyncChess
 
         private static int[,] grid =
         {
-            { 0, 0, 1, 0, 0, 0, 0, 0 },
-            { 0, 0, 1, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 1, 1, 0, 0, 0 },
-            { 0, 0, 0, 0, 1, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 1, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0 }
+            { 0, 0, 9, 0, 0, 0, 0, 0 },
+            { 0, 0, 9, 2, 3, 0, 0, 0 },
+            { 0, 1, 2, 3, 4, 0, 0, 0 },
+            { 0, 1, 2, 9, 9, 0, 0, 0 },
+            { 0, 1, 1, 4, 9, 1, 1, 0 },
+            { 0, 0, 2, 3, 2, 2, 1, 0 },
+            { 0, 0, 2, 3, 2, 9, 1, 0 },
+            { 0, 0, 3, 3, 2, 2, 1, 0 }
         };
 
         public static void Main(string[] args)
@@ -220,15 +220,98 @@ namespace SyncChess
             {
                 for (int x = 0; x < grid.GetLength(1); x++)
                 {
-                    if (grid[x, y] == 1)
-                    {
-                        DrawRectangle(
-                            GRID_X + x * CELL_WIDTH,
-                            GRID_Y + y * CELL_HEIGHT,
-                            CELL_WIDTH,
-                            CELL_HEIGHT,
-                            BLACK
-                        );
+                    switch(grid[x, y]){
+                        case 1: {
+                            DrawRectangle(
+                                GRID_X + x * CELL_WIDTH,
+                                GRID_Y + y * CELL_HEIGHT,
+                                CELL_WIDTH,
+                                CELL_HEIGHT,
+                                new Color(128, 128, 128, 255)
+                            );
+                            break;
+                        }
+                        case 2: {
+                            DrawRectangle(
+                                GRID_X + x * CELL_WIDTH,
+                                GRID_Y + y * CELL_HEIGHT,
+                                CELL_WIDTH,
+                                CELL_HEIGHT,
+                                new Color(148, 148, 148, 255)
+                            );
+                            break;
+                        }
+                        case 3: {
+                            DrawRectangle(
+                                GRID_X + x * CELL_WIDTH,
+                                GRID_Y + y * CELL_HEIGHT,
+                                CELL_WIDTH,
+                                CELL_HEIGHT,
+                                new Color(168, 168, 168, 255)
+                            );
+                            break;
+                        }
+                        case 4: {
+                            DrawRectangle(
+                                GRID_X + x * CELL_WIDTH,
+                                GRID_Y + y * CELL_HEIGHT,
+                                CELL_WIDTH,
+                                CELL_HEIGHT,
+                                new Color(188, 188, 188, 255)
+                            );
+                            break;
+                        }
+                        case 5: {
+                            DrawRectangle(
+                                GRID_X + x * CELL_WIDTH,
+                                GRID_Y + y * CELL_HEIGHT,
+                                CELL_WIDTH,
+                                CELL_HEIGHT,
+                                new Color(208, 208, 208, 255)
+                            );
+                            break;
+                        }
+                        case 6: {
+                            DrawRectangle(
+                                GRID_X + x * CELL_WIDTH,
+                                GRID_Y + y * CELL_HEIGHT,
+                                CELL_WIDTH,
+                                CELL_HEIGHT,
+                                new Color(228, 228, 228, 255)
+                            );
+                            break;
+                        }
+                        case 7: {
+                            DrawRectangle(
+                                GRID_X + x * CELL_WIDTH,
+                                GRID_Y + y * CELL_HEIGHT,
+                                CELL_WIDTH,
+                                CELL_HEIGHT,
+                                new Color(248, 248, 248, 255)
+                            );
+                            break;
+                        }
+                        case 8: {
+                            DrawRectangle(
+                                GRID_X + x * CELL_WIDTH,
+                                GRID_Y + y * CELL_HEIGHT,
+                                CELL_WIDTH,
+                                CELL_HEIGHT,
+                                new Color(255, 255, 255, 255)
+                            );
+                            break;
+                        }
+                        case 9:
+                        {
+                            DrawRectangle(
+                                GRID_X + x * CELL_WIDTH,
+                                GRID_Y + y * CELL_HEIGHT,
+                                CELL_WIDTH,
+                                CELL_HEIGHT,
+                                BLACK
+                            );
+                            break;
+                        }
                     }
                 }
             }
