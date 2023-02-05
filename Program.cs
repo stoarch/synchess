@@ -27,11 +27,11 @@ namespace SyncChess
         private static int[,] grid =
         {
             { 0, 0, 9, 0, 0, 0, 0, 0 },
-            { 0, 0, 9, 2, 3, 0, 0, 0 },
-            { 0, 1, 2, 3, 4, 0, 0, 0 },
+            { 0, 0, 9, 2, 3, 4, 0, 0 },
+            { 0, 1, 2, 3, 7, 0, 0, 0 },
             { 0, 1, 2, 9, 9, 0, 0, 0 },
-            { 0, 1, 1, 4, 9, 1, 1, 0 },
-            { 0, 0, 2, 3, 2, 2, 1, 0 },
+            { 0, 1, 1, 7, 9, 1, 1, 0 },
+            { 0, 0, 6, 3, 2, 2, 1, 0 },
             { 0, 0, 2, 3, 2, 9, 1, 0 },
             { 0, 0, 3, 3, 2, 2, 1, 0 }
         };
@@ -146,8 +146,43 @@ namespace SyncChess
                 blueCharacter.Draw();
                 redCharacter.Draw();
 
+                //Draw legend of grid cell weights
+                for (int i = 0; i < 10; i++)
+                {
+                    DrawRectangle(
+                        700,
+                        50 + i * 50,
+                        30,
+                        30,
+                        new Color(128 + i*20, 128 + i*20, 128 + i*20, 255)
+                    );
+                    DrawText(
+                        i.ToString(),
+                        710,
+                        50 + 10 + i * 50,
+                        20,
+                        new Color(0, 0, 0, 255)
+                    );
+                }
+
+
+                //Draw path cost
+                if (path != null && path.Count > 0)
+                {
+                    int pathCost = path.Sum(node => grid[node.X, node.Y]);
+
+                    DrawText(
+                        "Path cost: " + pathCost,
+                        700,
+                        600,
+                        20,
+                        new Color(0, 0, 0, 255)
+                    );
+                }
+
                 DrawGrid();
 
+                //Draw cell highlighted
                 if (drawCellHighlighted)
                 {
                     //Draw path
@@ -195,6 +230,7 @@ namespace SyncChess
             CloseWindow();
         }
 
+
         private static void DrawGrid()
         {
             for (int i = 0; i <= 8; i++)
@@ -220,6 +256,7 @@ namespace SyncChess
             {
                 for (int x = 0; x < grid.GetLength(1); x++)
                 {
+
                     switch(grid[x, y]){
                         case 1: {
                             DrawRectangle(
@@ -313,6 +350,15 @@ namespace SyncChess
                             break;
                         }
                     }
+
+                    //Draw cell weight
+                    DrawText(
+                        grid[x, y].ToString(),
+                        GRID_X + x * CELL_WIDTH + 10,
+                        GRID_Y + y * CELL_HEIGHT + 10,
+                        20,
+                        new Color(0, 0, 0, 255)
+                    );
                 }
             }
         }

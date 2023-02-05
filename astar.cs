@@ -27,7 +27,7 @@ namespace SyncChess
             pathList.Clear();
 
             // Create the start node
-            AStarNode startNode = new AStarNode(startX, startY);
+            AStarNode startNode = new AStarNode(startX, startY, map);
             startNode.G = 0;
             startNode.H = GetH(startNode, endX, endY);
             startNode.F = startNode.G + startNode.H;
@@ -51,15 +51,14 @@ namespace SyncChess
                 if (map[currentNode.X, currentNode.Y] == 9)
                 {
                     currentNode.F = int.MaxValue;
-                }else{
-                    // Get weight for current node from map
-                    currentNode.F = map[currentNode.X, currentNode.Y];
                 }
 
                 // Loop through the open list to find the node with the lowest F value
                 for (int i = 0; i < openList.Count; i++)
                 {
-                    if (openList[i].F < currentNode.F) // if the cost of the current node is less than the cost of the node we are checking
+                    // if the cost of the current node is less than the cost
+                    // of the node we are checking
+                    if (openList[i].F < currentNode.F)
                     {
                         currentNode = openList[i];
                     }
@@ -117,16 +116,16 @@ namespace SyncChess
                         if (adjacentNode.G > currentNode.G + 1)
                         {
                             adjacentNode.Parent = currentNode;
-                            adjacentNode.G = currentNode.G + 1;
-                            adjacentNode.F = adjacentNode.G + adjacentNode.H;
+                            adjacentNode.G = currentNode.G + 1 + currentNode.Weight;
+                            adjacentNode.F = adjacentNode.G + adjacentNode.H + currentNode.Weight;
                         }
                     }
                     else
                     {
                         adjacentNode.Parent = currentNode;
-                        adjacentNode.G = currentNode.G + 1;
+                        adjacentNode.G = currentNode.G + 1 + currentNode.Weight;
                         adjacentNode.H = GetH(adjacentNode, endX, endY);
-                        adjacentNode.F = adjacentNode.G + adjacentNode.H;
+                        adjacentNode.F = adjacentNode.G + adjacentNode.H + adjacentNode.Weight;
                         openList.Add(adjacentNode);
                     }
                 }
@@ -158,7 +157,7 @@ namespace SyncChess
             {
                 if (map[currentNode.X, currentNode.Y - 1] < 9)
                 {
-                    adjacentNodes.Add(new AStarNode(currentNode.X, currentNode.Y - 1));
+                    adjacentNodes.Add(new AStarNode(currentNode.X, currentNode.Y - 1, map));
                 }
             }
 
@@ -167,7 +166,7 @@ namespace SyncChess
             {
                 if (map[currentNode.X, currentNode.Y + 1] < 9)
                 {
-                    adjacentNodes.Add(new AStarNode(currentNode.X, currentNode.Y + 1));
+                    adjacentNodes.Add(new AStarNode(currentNode.X, currentNode.Y + 1, map));
                 }
             }
 
@@ -176,7 +175,7 @@ namespace SyncChess
             {
                 if (map[currentNode.X - 1, currentNode.Y] < 9)
                 {
-                    adjacentNodes.Add(new AStarNode(currentNode.X - 1, currentNode.Y));
+                    adjacentNodes.Add(new AStarNode(currentNode.X - 1, currentNode.Y, map));
                 }
             }
 
@@ -185,7 +184,7 @@ namespace SyncChess
             {
                 if (map[currentNode.X + 1, currentNode.Y] < 9)
                 {
-                    adjacentNodes.Add(new AStarNode(currentNode.X + 1, currentNode.Y));
+                    adjacentNodes.Add(new AStarNode(currentNode.X + 1, currentNode.Y, map));
                 }
             }
 
@@ -194,7 +193,7 @@ namespace SyncChess
             {
                 if (map[currentNode.X - 1, currentNode.Y - 1] < 9)
                 {
-                    adjacentNodes.Add(new AStarNode(currentNode.X - 1, currentNode.Y - 1));
+                    adjacentNodes.Add(new AStarNode(currentNode.X - 1, currentNode.Y - 1, map));
                 }
             }
 
@@ -203,7 +202,7 @@ namespace SyncChess
             {
                 if (map[currentNode.X + 1, currentNode.Y - 1] < 9)
                 {
-                    adjacentNodes.Add(new AStarNode(currentNode.X + 1, currentNode.Y - 1));
+                    adjacentNodes.Add(new AStarNode(currentNode.X + 1, currentNode.Y - 1, map));
                 }
             }
 
@@ -212,7 +211,7 @@ namespace SyncChess
             {
                 if (map[currentNode.X - 1, currentNode.Y + 1] < 9)
                 {
-                    adjacentNodes.Add(new AStarNode(currentNode.X - 1, currentNode.Y + 1));
+                    adjacentNodes.Add(new AStarNode(currentNode.X - 1, currentNode.Y + 1, map));
                 }
             }
 
@@ -221,7 +220,7 @@ namespace SyncChess
             {
                 if (map[currentNode.X + 1, currentNode.Y + 1] < 9)
                 {
-                    adjacentNodes.Add(new AStarNode(currentNode.X + 1, currentNode.Y + 1));
+                    adjacentNodes.Add(new AStarNode(currentNode.X + 1, currentNode.Y + 1, map));
                 }
             }
 
@@ -233,11 +232,13 @@ namespace SyncChess
             // Use the Manhattan method for calculating H - the distance between the current node and the end node
             return Math.Abs(node.X - endX) + Math.Abs(node.Y - endY);
 
+        /*
             //Use chebychev distance
             return Math.Max(Math.Abs(node.X - endX), Math.Abs(node.Y - endY));
 
             //Use euclidean distance
             return (int)Math.Sqrt(Math.Pow(node.X - endX, 2) + Math.Pow(node.Y - endY, 2));
+        */
         }
     }
 
@@ -250,10 +251,20 @@ namespace SyncChess
         public int F; // G + H - total cost of the path
         public AStarNode Parent;
 
-        public AStarNode(int x, int y)
+        private int[,] grid;
+
+        //Weight of node
+        public int Weight { get{ return grid[X,Y];} }
+
+        public AStarNode(int x, int y, int [,] grid)
         {
             X = x;
             Y = y;
+            G = 0;
+            H = 0;
+            F = 0;
+            Parent = null;
+            this.grid = grid;
         }
 
         public override bool Equals(object obj)
