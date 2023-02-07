@@ -11,6 +11,7 @@ namespace SyncChess
 {
     public class Character
     {
+        private static int uid = 0;
         private Texture2D texture;
         private Vector2 position = new Vector2();
         private float rotation;
@@ -24,6 +25,8 @@ namespace SyncChess
         private bool mouseOver;
         private List<AStarNode> path;
         private float speed = 1.0f;
+
+        public int Id{ get; private set; }
 
         public bool Selected => selected;
         public Vector2 Position => position;
@@ -68,6 +71,9 @@ namespace SyncChess
             float scale
         )
         {
+            Id = uid;
+            uid += 1;
+
             this.texture = texture;
             this.selectedTexture = selectedTexture;
             this.position = position;
@@ -259,6 +265,10 @@ namespace SyncChess
         private float Rad2Deg(float rad)
         {
             return rad * (180.0f / (float)Math.PI);
+        }
+
+        public String toString(){
+            return "Character: " + Id + " Position: " + position;
         }
     }
 }

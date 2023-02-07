@@ -139,7 +139,7 @@ public class Game
 
                 if (blueCharacter.Selected && !blueCharacter.MouseOver)
                 {
-                    selectedUnitId = i;
+                    selectedUnitId = blueCharacter.Id;
 
                     drawCellHighlighted = true;
 
@@ -162,17 +162,14 @@ public class Game
                 }
 
                 //If mouse clicked on cell, move Character
-                if (leftPressed && path != null && path.Count > 0)
+                if (leftPressed && path != null && path.Count > 0 && blueCharacter.Id == selectedUnitId)
                 {
                     //Display path information fading 1s
                     pathDebugFadeTimeout = 1F;
 
-                    //Log path information
-                    TraceLog(3, "Path setting:" + path.Count);
-
                     if (path.Count > 0)
                     {
-                        TraceLog(3, "Path set to char:" + path.Count);
+                        TraceLog(LOG_INFO, "Path set to char:" + path.Count + " Char: " + selectedUnitId + " bc: " + blueCharacter.toString());
 
                         blueCharacter.SetPath(path);
                         blueCharacter.Moving = true;
