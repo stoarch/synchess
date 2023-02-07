@@ -36,20 +36,36 @@ public class Game
         { 0, 0, 3, 3, 2, 2, 1, 0 }
     };
 
+    private static List<AStarNode> path;
+    private static Vector2 mousePosition;
+    private static Vector2 mouseGridPos;
+    private static bool drawCellHighlighted;
+    private static Character redCharacter;
+    private static List<Character> blueCharacters;
+    private static int selectedUnitId;
+    private static Texture2D blueUnitTexture;
+    private static Texture2D blueUnitSelectedTexture;
+    private static Texture2D redUnitTexture;
+    private static Texture2D redUnitSelectedTexture;
+    private static bool leftPressed;
+
+    // cell highlighted texture
+    private static Texture2D cellHighlightedTexture;
+
     public static void Main(string[] args)
     {
         InitWindow(1280, 720, "BoomTris");
         SetTargetFPS(60);
 
         // load blue unit texture
-        Texture2D blueUnitTexture = LoadTexture("resources/circle/blue.png");
-        Texture2D blueUnitSelectedTexture = LoadTexture("resources/square/blue.png");
+        blueUnitTexture = LoadTexture("resources/circle/blue.png");
+        blueUnitSelectedTexture = LoadTexture("resources/square/blue.png");
         // load red unit texture
-        Texture2D redUnitTexture = LoadTexture("resources/circle/red.png");
-        Texture2D redUnitSelectedTexture = LoadTexture("resources/square/red.png");
+        redUnitTexture = LoadTexture("resources/circle/red.png");
+        redUnitSelectedTexture = LoadTexture("resources/square/red.png");
 
         // cell highlighted texture
-        Texture2D cellHighlightedTexture = LoadTexture("resources/tile/wall-1111.png");
+        cellHighlightedTexture = LoadTexture("resources/tile/wall-1111.png");
 
         var bluePos = new Vector2(0, 0);
         var redPos = new Vector2(7, 7);
@@ -58,7 +74,7 @@ public class Game
         var bluePos2 = new Vector2(0, 1);
         var bluePos3 = new Vector2(1, 1);
 
-        List<Character> blueCharacters = new List<Character> {
+        blueCharacters = new List<Character> {
             new Character(
                 blueUnitTexture,
                 blueUnitSelectedTexture,
@@ -87,7 +103,7 @@ public class Game
             character.SetGrid(GRID_X, GRID_Y, CELL_WIDTH, CELL_HEIGHT);
         }
 
-        var redCharacter = new Character(
+        redCharacter = new Character(
             redUnitTexture,
             redUnitSelectedTexture,
             redPos,
@@ -96,11 +112,13 @@ public class Game
         );
         redCharacter.SetGrid(GRID_X, GRID_Y, CELL_WIDTH, CELL_HEIGHT);
 
-        var mousePosition = new Vector2();
-        List<AStarNode> path = new List<AStarNode>();
+        mousePosition = new Vector2();
+        path = new List<AStarNode>();
 
         float debugFadeTimeout = 0F;
         float pathDebugFadeTimeout = 0F;
+
+        selectedUnitId = -1;
 
         while (!WindowShouldClose())
         {
@@ -111,15 +129,18 @@ public class Game
                 (int)(mousePosition.Y - GRID_Y) / CELL_HEIGHT
             );
 
-            bool leftPressed = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
+            leftPressed = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
 
-            bool drawCellHighlighted = false;
-            foreach(var blueCharacter in blueCharacters)
+            drawCellHighlighted = false;
+            for(int i = 0; i < blueCharacters.Count; i++)
             {
+                var blueCharacter = blueCharacters[i];
                 blueCharacter.HandleInput(mousePosition);
 
                 if (blueCharacter.Selected && !blueCharacter.MouseOver)
                 {
+                    selectedUnitId = i;
+
                     drawCellHighlighted = true;
 
                     //Calculate path towards mouse grid cell
@@ -167,95 +188,7 @@ public class Game
                 blueCharacter.Update(dt);
             }
 
-            //Draw scene//
-            BeginDrawing();
-
-            ClearBackground(SKYBLUE);
-            DrawFPS(10, 10);
-            DrawText("SyncChess", 100, 10, 30, WHITE);
-
-
-            //Draw legend of grid cell weights
-            for (int i = 0; i < 10; i++)
-            {
-                DrawRectangle(
-                    700,
-                    50 + i * 50,
-                    30,
-                    30,
-                    new Color(128 + i*20, 128 + i*20, 128 + i*20, 255)
-                );
-                DrawText(
-                    i.ToString(),
-                    710,
-                    50 + 10 + i * 50,
-                    20,
-                    new Color(0, 0, 0, 255)
-                );
-            }
-
-
-            //Draw path cost
-            if (path != null && path.Count > 0)
-            {
-                int pathCost = path.Sum(node => grid[node.X, node.Y]);
-
-                DrawText(
-                    "Path cost: " + pathCost,
-                    700,
-                    600,
-                    20,
-                    new Color(0, 0, 0, 255)
-                );
-            }
-
-            DrawGrid();
-
-            //Draw chars
-            foreach(var blueCharacter in blueCharacters)
-            {
-                blueCharacter.Draw();
-            }
-            redCharacter.Draw();
-
-            //Draw cell highlighted
-            if (drawCellHighlighted)
-            {
-                //Draw path
-                if (path != null)
-                    foreach (var node in path)
-                    {
-                        DrawTexture(
-                            cellHighlightedTexture,
-                            GRID_X
-                            + node.X * CELL_WIDTH
-                            + CELL_WIDTH / 2
-                            - cellHighlightedTexture.width / 2,
-                            GRID_Y
-                            + node.Y * CELL_HEIGHT
-                            + CELL_HEIGHT / 2
-                            - cellHighlightedTexture.height / 2,
-                            WHITE
-                        );
-                    }
-
-                //Draw highlighted texture over grid cell
-                DrawTextureEx(
-                    cellHighlightedTexture,
-                    new Vector2(
-                        GRID_X + (CELL_WIDTH * (int)mouseGridPos.X),
-                        GRID_Y + (CELL_HEIGHT * (int)mouseGridPos.Y)
-                    ),
-                    0,
-                    CELL_WIDTH / cellHighlightedTexture.width,
-                    WHITE
-                );
-            }
-
-            //Draw debug info
-
-
-            EndDrawing();
+            DrawScene();
         }
 
         UnloadTexture(blueUnitTexture);
@@ -264,6 +197,147 @@ public class Game
         UnloadTexture(redUnitSelectedTexture);
 
         CloseWindow();
+    }
+
+    private static void DrawScene()
+    {
+        BeginDrawing();
+        ClearBackground(SKYBLUE);
+        DrawFPS(10, 10);
+        DrawText("SyncChess", 100, 10, 30, WHITE);
+        DrawGridLegend();
+        DrawPathCost();
+        DrawGrid();
+        DrawCharacters();
+        DrawCellHighlighted();
+        DrawDebugInformation();
+        EndDrawing();
+    }
+
+    private static void DrawGridLegend()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            DrawRectangle(
+                700,
+                50 + i * 50,
+                30,
+                30,
+                new Color(128 + i*20, 128 + i*20, 128 + i*20, 255)
+            );
+            DrawText(
+                i.ToString(),
+                710,
+                50 + 10 + i * 50,
+                20,
+                new Color(0, 0, 0, 255)
+            );
+        }
+    }
+
+    private static void DrawPathCost()
+    {
+        if (path != null && path.Count > 0)
+        {
+            int pathCost = path.Sum(node => grid[node.X, node.Y]);
+            DrawText(
+                "Path cost: " + pathCost,
+                700,
+                600,
+                20,
+                new Color(0, 0, 0, 255)
+            );
+        }
+    }
+
+    private static void DrawCellHighlighted()
+    {
+        if (drawCellHighlighted)
+        {
+//Draw path
+            if (path != null)
+                foreach (var node in path)
+                {
+                    DrawTexture(
+                        cellHighlightedTexture,
+                        GRID_X
+                        + node.X * CELL_WIDTH
+                        + CELL_WIDTH / 2
+                        - cellHighlightedTexture.width / 2,
+                        GRID_Y
+                        + node.Y * CELL_HEIGHT
+                        + CELL_HEIGHT / 2
+                        - cellHighlightedTexture.height / 2,
+                        WHITE
+                    );
+                }
+
+
+            //Draw highlighted texture over grid cell
+            DrawTextureEx(
+                cellHighlightedTexture,
+                new Vector2(
+                    GRID_X + (CELL_WIDTH * (int)mouseGridPos.X),
+                    GRID_Y + (CELL_HEIGHT * (int)mouseGridPos.Y)
+                ),
+                0,
+                CELL_WIDTH / cellHighlightedTexture.width,
+                WHITE
+            );
+        }
+
+    }
+
+    private static void UpdateCharacters(float dt)
+    {
+        foreach(var blueCharacter in blueCharacters)
+        {
+            blueCharacter.Update(dt);
+        }
+    }
+
+    private static void DrawDebugInformation()
+    {
+//Draw path cost
+        if (path != null && path.Count > 0)
+        {
+            int pathCost = path.Sum(node => grid[node.X, node.Y]);
+
+            DrawText(
+                "Path cost: " + pathCost,
+                700,
+                600,
+                20,
+                new Color(0, 0, 0, 255)
+            );
+        }
+
+        if (selectedUnitId >= 0)
+        {
+            var blueCharacter = blueCharacters[selectedUnitId];
+            DrawText(
+                "Unit " + selectedUnitId + " - " + blueCharacter.Position,
+                10,
+                50 + selectedUnitId * 30,
+                20,
+                LIME
+            );
+        }
+
+    }
+
+    private static void DrawFPS(int x, int y)
+    {
+        DrawText("FPS: " + GetFPS(), x, y, 20, MAROON);
+    }
+
+    private static void DrawCharacters()
+    {
+        foreach(var blueCharacter in blueCharacters)
+        {
+            blueCharacter.Draw();
+        }
+        redCharacter.Draw();
     }
 
 
