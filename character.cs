@@ -25,6 +25,7 @@ namespace SyncChess
         private bool mouseOver;
         private List<AStarNode> path;
         private float speed = 1.0f;
+        private int[,] grid;
 
         public int Id{ get; private set; }
 
@@ -68,7 +69,8 @@ namespace SyncChess
             Texture2D selectedTexture,
             Vector2 position,
             float rotation,
-            float scale
+            float scale,
+            int[,] grid
         )
         {
             Id = uid;
@@ -81,6 +83,7 @@ namespace SyncChess
             this.scale = scale;
 
             selected = false;
+            this.grid = grid;
         }
 
         public void SetGrid(int gridX, int gridY, int cellWidth, int cellHeight)
@@ -217,7 +220,8 @@ namespace SyncChess
                         );
                         if (distance > 0.1f)
                         {
-                            position += direction * speed * dt;
+                            var terrainSpeed = Math.Max(grid[target.X, target.Y], 1);
+                            position += direction * speed/terrainSpeed * dt;
                             //Rotate towards next node gradually
                             rotation = Lerp(rotation, Rad2Deg(Vector2ToAngle(direction)), 0.1f);
                         }

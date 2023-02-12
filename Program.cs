@@ -43,6 +43,7 @@ public class Game
     private static Character redCharacter;
     private static List<Character> blueCharacters;
     private static int selectedUnitId;
+    private static Character selectedUnit;
     private static Texture2D blueUnitTexture;
     private static Texture2D blueUnitSelectedTexture;
     private static Texture2D redUnitTexture;
@@ -80,21 +81,24 @@ public class Game
                 blueUnitSelectedTexture,
                 bluePos1,
                 0F,
-                0.8F
+                0.8F,
+                grid
             ),
             new Character(
                 blueUnitTexture,
                 blueUnitSelectedTexture,
                 bluePos2,
                 0F,
-                0.8F
+                0.8F,
+                grid
             ),
             new Character(
                 blueUnitTexture,
                 blueUnitSelectedTexture,
                 bluePos3,
                 0F,
-                0.8F
+                0.8F,
+                grid
             )
         };
 
@@ -108,7 +112,8 @@ public class Game
             redUnitSelectedTexture,
             redPos,
             -180F,
-            0.8F
+            0.8F,
+            grid
         );
         redCharacter.SetGrid(GRID_X, GRID_Y, CELL_WIDTH, CELL_HEIGHT);
 
@@ -119,6 +124,7 @@ public class Game
         float pathDebugFadeTimeout = 0F;
 
         selectedUnitId = -1;
+        selectedUnit = null;
 
         while (!WindowShouldClose())
         {
@@ -140,6 +146,7 @@ public class Game
                 if (blueCharacter.Selected && !blueCharacter.MouseOver)
                 {
                     selectedUnitId = blueCharacter.Id;
+                    selectedUnit = blueCharacter;
 
                     drawCellHighlighted = true;
 
@@ -249,6 +256,11 @@ public class Game
 
     private static void DrawCellHighlighted()
     {
+        if(path == null && selectedUnit != null)
+        {
+            path = selectedUnit.GetPath();
+        }
+
         if (drawCellHighlighted)
         {
 //Draw path
