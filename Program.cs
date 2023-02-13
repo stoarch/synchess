@@ -179,10 +179,21 @@ public class Game
                         TraceLog(LOG_INFO, "Path set to char:" + path.Count + " Char: " + selectedUnitId + " bc: " + blueCharacter.toString());
 
                         blueCharacter.SetPath(path);
-                        blueCharacter.Moving = true;
                     }
                 }
             }
+
+
+    if (IsKeyReleased(KeyboardKey.KEY_SPACE))
+    {
+        //Run each blue character
+        foreach(var blueCharacter in blueCharacters)
+        {
+            blueCharacter.Moving = true;
+        }
+    }
+
+
 
             //Update scene//
             float dt = GetFrameTime();
