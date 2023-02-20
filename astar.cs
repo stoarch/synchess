@@ -232,13 +232,13 @@ namespace SyncChess
             // Use the Manhattan method for calculating H - the distance between the current node and the end node
             return Math.Abs(node.X - endX) + Math.Abs(node.Y - endY);
 
-        /*
-            //Use chebychev distance
-            return Math.Max(Math.Abs(node.X - endX), Math.Abs(node.Y - endY));
-
-            //Use euclidean distance
-            return (int)Math.Sqrt(Math.Pow(node.X - endX, 2) + Math.Pow(node.Y - endY, 2));
-        */
+            /*
+                //Use chebychev distance
+                return Math.Max(Math.Abs(node.X - endX), Math.Abs(node.Y - endY));
+    
+                //Use euclidean distance
+                return (int)Math.Sqrt(Math.Pow(node.X - endX, 2) + Math.Pow(node.Y - endY, 2));
+            */
         }
     }
 
@@ -254,9 +254,12 @@ namespace SyncChess
         private int[,] grid;
 
         //Weight of node
-        public int Weight { get{ return grid[X,Y];} }
+        public int Weight
+        {
+            get { return grid[X, Y]; }
+        }
 
-        public AStarNode(int x, int y, int [,] grid)
+        public AStarNode(int x, int y, int[,] grid)
         {
             X = x;
             Y = y;

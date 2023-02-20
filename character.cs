@@ -27,7 +27,7 @@ namespace SyncChess
         private float speed = 1.0f;
         private int[,] grid;
 
-        public int Id{ get; private set; }
+        public int Id { get; private set; }
 
         public bool Selected => selected;
         public Vector2 Position => position;
@@ -97,8 +97,8 @@ namespace SyncChess
         public void HandleInput(Vector2 mousePosition)
         {
             Rectangle rect = new Rectangle(
-                this.gridX + position.X*cellWidth,
-                this.gridY + position.Y*cellHeight,
+                this.gridX + position.X * cellWidth,
+                this.gridY + position.Y * cellHeight,
                 this.cellWidth,
                 this.cellHeight
             );
@@ -111,7 +111,17 @@ namespace SyncChess
                 TraceLog(LOG_INFO, "Mouse over character");
                 TraceLog(LOG_INFO, "Mouse position: " + mousePosition);
                 TraceLog(LOG_INFO, "Character position: " + position);
-                TraceLog(LOG_INFO, "Character rect: " + rect.X + ", " + rect.Y + ", " + rect.width + ", " + rect.height);
+                TraceLog(
+                    LOG_INFO,
+                    "Character rect: "
+                        + rect.X
+                        + ", "
+                        + rect.Y
+                        + ", "
+                        + rect.width
+                        + ", "
+                        + rect.height
+                );
             }
 
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
@@ -144,8 +154,8 @@ namespace SyncChess
                         selectedTexture,
                         new Rectangle(0, 0, selectedTexture.width, selectedTexture.height),
                         new Rectangle(
-                            position.X*cellWidth + gridX + (cellWidth / 2),
-                            position.Y*cellHeight + gridY + (cellHeight / 2),
+                            position.X * cellWidth + gridX + (cellWidth / 2),
+                            position.Y * cellHeight + gridY + (cellHeight / 2),
                             cellWidth,
                             cellHeight
                         ),
@@ -161,8 +171,8 @@ namespace SyncChess
                         selectedTexture,
                         new Rectangle(0, 0, selectedTexture.width, selectedTexture.height),
                         new Rectangle(
-                            position.X*cellWidth + gridX + (cellWidth / 2),
-                            position.Y*cellHeight + gridY + (cellHeight / 2),
+                            position.X * cellWidth + gridX + (cellWidth / 2),
+                            position.Y * cellHeight + gridY + (cellHeight / 2),
                             cellWidth,
                             cellHeight
                         ),
@@ -179,8 +189,8 @@ namespace SyncChess
                     texture,
                     new Rectangle(0, 0, texture.width, texture.height),
                     new Rectangle(
-                        position.X*cellWidth + gridX + (cellWidth / 2),
-                        position.Y*cellHeight + gridY + (cellHeight / 2),
+                        position.X * cellWidth + gridX + (cellWidth / 2),
+                        position.Y * cellHeight + gridY + (cellHeight / 2),
                         cellWidth,
                         cellHeight
                     ),
@@ -221,7 +231,7 @@ namespace SyncChess
                         if (distance > 0.1f)
                         {
                             var terrainSpeed = Math.Max(grid[target.X, target.Y], 1);
-                            position += direction * speed/terrainSpeed * dt;
+                            position += direction * speed / terrainSpeed * dt;
                             //Rotate towards next node gradually
                             rotation = Lerp(rotation, Rad2Deg(Vector2ToAngle(direction)), 0.1f);
                         }
@@ -271,7 +281,8 @@ namespace SyncChess
             return rad * (180.0f / (float)Math.PI);
         }
 
-        public String toString(){
+        public String toString()
+        {
             return "Character: " + Id + " Position: " + position;
         }
     }
