@@ -49,6 +49,8 @@ namespace SyncChess
         private static Texture2D redUnitTexture;
         private static Texture2D redUnitSelectedTexture;
         private static bool leftPressed;
+        private static float pathDebugFadeTimeout;
+        private static float debugFadeTimeout = 0.5f;
 
         // cell highlighted texture
         private static Texture2D cellHighlightedTexture;
@@ -100,8 +102,8 @@ namespace SyncChess
             mousePosition = new Vector2();
             path = new List<AStarNode>();
 
-            float debugFadeTimeout = 0F;
-            float pathDebugFadeTimeout = 0F;
+            debugFadeTimeout = 0F;
+            pathDebugFadeTimeout = 0F;
 
             selectedUnitId = -1;
             selectedUnit = null;
@@ -111,68 +113,8 @@ namespace SyncChess
                 //Check input//
                 CheckInput();
 
-                drawCellHighlighted = false;
-                for (int i = 0; i < blueCharacters.Count; i++)
-                {
-                    var blueCharacter = blueCharacters[i];
-                    blueCharacter.HandleInput(mousePosition);
-
-                    if (blueCharacter.Selected && !blueCharacter.MouseOver)
-                    {
-                        selectedUnitId = blueCharacter.Id;
-                        selectedUnit = blueCharacter;
-
-                        drawCellHighlighted = true;
-
-                        //Calculate path towards mouse grid cell
-                        AStar pathfinder = new AStar();
-
-                        path = pathfinder.GetPath(
-                            grid,
-                            (int)blueCharacter.Position.X,
-                            (int)blueCharacter.Position.Y,
-                            (int)mouseGridPos.X,
-                            (int)mouseGridPos.Y
-                        );
-
-                        if (path == null)
-                            TraceLog(
-                                LOG_INFO,
-                                "Path undefined from "
-                                    + blueCharacter.Position
-                                    + " to "
-                                    + mouseGridPos
-                            );
-                    }
-
-                    //If mouse clicked on cell, move Character
-                    if (
-                        leftPressed
-                        && path != null
-                        && path.Count > 0
-                        && blueCharacter.Id == selectedUnitId
-                    )
-                    {
-                        //Display path information fading 1s
-                        pathDebugFadeTimeout = 1F;
-
-                        if (path.Count > 0)
-                        {
-                            TraceLog(
-                                LOG_INFO,
-                                "Path set to char:"
-                                    + path.Count
-                                    + " Char: "
-                                    + selectedUnitId
-                                    + " bc: "
-                                    + blueCharacter.toString()
-                            );
-
-                            blueCharacter.SetPath(path);
-                            blueCharacter.Moving = false;
-                        }
-                    }
-                }
+                //Set path for characters
+                SetPathForCharacters();
 
                 if (IsKeyReleased(KeyboardKey.KEY_SPACE))
                 {
@@ -476,6 +418,69 @@ namespace SyncChess
             );
 
             leftPressed = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
+        }
+
+        private static void SetPathForCharacters()
+        {
+            drawCellHighlighted = false;
+            for (int i = 0; i < blueCharacters.Count; i++)
+            {
+                var blueCharacter = blueCharacters[i];
+                blueCharacter.HandleInput(mousePosition);
+
+                if (blueCharacter.Selected && !blueCharacter.MouseOver)
+                {
+                    selectedUnitId = blueCharacter.Id;
+                    selectedUnit = blueCharacter;
+
+                    drawCellHighlighted = true;
+
+                    //Calculate path towards mouse grid cell
+                    AStar pathfinder = new AStar();
+
+                    path = pathfinder.GetPath(
+                        grid,
+                        (int)blueCharacter.Position.X,
+                        (int)blueCharacter.Position.Y,
+                        (int)mouseGridPos.X,
+                        (int)mouseGridPos.Y
+                    );
+
+                    if (path == null)
+                        TraceLog(
+                            LOG_INFO,
+                            "Path undefined from " + blueCharacter.Position + " to " + mouseGridPos
+                        );
+                }
+
+                //If mouse clicked on cell, move Character
+                if (
+                    leftPressed
+                    && path != null
+                    && path.Count > 0
+                    && blueCharacter.Id == selectedUnitId
+                )
+                {
+                    //Display path information fading 1s
+                    pathDebugFadeTimeout = 1F;
+
+                    if (path.Count > 0)
+                    {
+                        TraceLog(
+                            LOG_INFO,
+                            "Path set to char:"
+                                + path.Count
+                                + " Char: "
+                                + selectedUnitId
+                                + " bc: "
+                                + blueCharacter.toString()
+                        );
+
+                        blueCharacter.SetPath(path);
+                        blueCharacter.Moving = false;
+                    }
+                }
+            }
         }
     } //Game
 }
